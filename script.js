@@ -1,3 +1,5 @@
+/*----- constants -----*/
+
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -8,27 +10,44 @@ class SnakePart {
 	}
 }
 
-let speed = 7;
+const snakeParts = [];
+
+const yumSound = new Audio('/sounds/yum.mp3');
+const loseSound = new Audio('/sounds/lose.wav');
+loseSound.volume = 0.1;
+
+/*----- app's state (variables) -----*/
 
 let tileCount = 20;
 let tileSize = canvas.width / tileCount - 2;
+
+let speed = 3;
+let score = 0;
+let tailLength = 0;
+
 let headX = 10;
 let headY = 10;
-const snakeParts = [];
-let tailLength = 2;
 
-let appleX = 5;
-let appleY = 5;
+let mouseX = Math.floor(Math.random() * tileCount);
+let mouseY = Math.floor(Math.random() * tileCount);
 
-let xVelocity = 0;
-let yVelocity = 0;
+let xDirection = 0;
+let yDirection = 0;
 
-let score = 0;
+/*----- cached element references -----*/
 
-const gulpSound = new Audio('gulp.mp3');
+const restart = document.getElementById('restart');
+
+document.addEventListener('keydown', keyDown);
+
+/*----- event listeners -----*/
+
+restart.addEventListener('click', startOver);
+
+/*----- functions -----*/
 
 // game loop
-function drawGame() {
+function init() {
 	changeSnakePosition();
 	let result = isGameOver();
 	if (result) {
@@ -37,30 +56,21 @@ function drawGame() {
 
 	clearScreen();
 
-	checkAppleCollision();
-	drawApple();
+	checkMouseCollision();
+	drawMouse();
 	drawSnake();
-
 	drawScore();
-
-	if (score > 2) {
-		speed = 11;
-	}
-	if (score > 2) {
-		speed = 15;
-	}
-
-	setTimeout(drawGame, 1000 / speed);
+	setTimeout(init, 1000 / speed);
 }
 
 function isGameOver() {
 	let gameOver = false;
 
-	if (yVelocity === 0 && xVelocity === 0) {
+	if (yDirection === 0 && xDirection === 0) {
 		return false;
 	}
 
-	//walls
+	//hit walls
 	if (headX < 0) {
 		gameOver = true;
 	} else if (headX >= tileCount) {
@@ -71,26 +81,27 @@ function isGameOver() {
 		gameOver = true;
 	}
 
+	// hit snake part
 	for (let i = 0; i < snakeParts.length; i++) {
 		let part = snakeParts[i];
 		if (part.x === headX && part.y === headY) {
 			gameOver = true;
+			// loseSound.play();
 			break;
 		}
 	}
 
 	if (gameOver) {
-		ctx.fillStyle = 'white';
-		ctx.font = '50px Verdana';
+		loseSound.play();
+		ctx.font = '3rem VT323';
 
 		const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-		gradient.addColorStop('0', ' magenta');
-		gradient.addColorStop('0.5', 'blue');
-		gradient.addColorStop('1.0', 'red');
-		// Fill with gradient
+		gradient.addColorStop('0', 'red');
+		gradient.addColorStop('0.5', 'purple');
+		gradient.addColorStop('1.0', 'turquoise');
 		ctx.fillStyle = gradient;
 
-		ctx.fillText('Game Over!', canvas.width / 6.5, canvas.height / 2);
+		ctx.fillText('Game Over!', canvas.width / 3.5, canvas.height / 2);
 	}
 
 	return gameOver;
@@ -98,8 +109,8 @@ function isGameOver() {
 
 function drawScore() {
 	ctx.fillStyle = 'white';
-	ctx.font = '10px Verdana';
-	ctx.fillText('Score ' + score, canvas.width - 50, 10);
+	ctx.font = '1.5rem VT323';
+	ctx.fillText('Score ' + score, canvas.width - 80, 20);
 }
 
 function clearScreen() {
@@ -108,10 +119,10 @@ function clearScreen() {
 }
 
 function drawSnake() {
-	ctx.fillStyle = 'orange';
+	ctx.fillStyle = 'red';
 	ctx.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize);
 
-	ctx.fillStyle = 'green';
+	ctx.fillStyle = 'orange';
 	for (let i = 0; i < snakeParts.length; i++) {
 		let part = snakeParts[i];
 		ctx.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
@@ -124,63 +135,79 @@ function drawSnake() {
 }
 
 function changeSnakePosition() {
-	headX = headX + xVelocity;
-	headY = headY + yVelocity;
+	headX = headX + xDirection;
+	headY = headY + yDirection;
 }
 
-function drawApple() {
-	ctx.fillStyle = 'red';
-	ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
+function drawMouse() {
+	ctx.fillStyle = 'green';
+	ctx.fillRect(mouseX * tileCount, mouseY * tileCount, tileSize, tileSize);
 }
 
-function checkAppleCollision() {
-	if (appleX === headX && appleY === headY) {
-		appleX = Math.floor(Math.random() * tileCount);
-		appleY = Math.floor(Math.random() * tileCount);
+function checkMouseCollision() {
+	if (mouseX === headX && mouseY === headY) {
+		mouseX = Math.floor(Math.random() * tileCount);
+		mouseY = Math.floor(Math.random() * tileCount);
 		tailLength++;
 		score++;
-		gulpSound.play();
+		speed += 0.5;
+		yumSound.play();
 	}
 }
-
-document.addEventListener('keydown', keyDown);
 
 function keyDown(event) {
 	// up
 	if (event.keyCode == 38) {
-		if (yVelocity == 1) {
+		if (yDirection == 1) {
 			return;
 		}
-		yVelocity = -1;
-		xVelocity = 0;
+		yDirection = -1;
+		xDirection = 0;
 	}
 
 	// down
 	if (event.keyCode == 40) {
-		if (yVelocity == -1) {
+		if (yDirection == -1) {
 			return;
 		}
-		yVelocity = 1;
-		xVelocity = 0;
+		yDirection = 1;
+		xDirection = 0;
 	}
 
 	// left
 	if (event.keyCode == 37) {
-		if (xVelocity == 1) {
+		if (xDirection == 1) {
 			return;
 		}
-		yVelocity = 0;
-		xVelocity = -1;
+		yDirection = 0;
+		xDirection = -1;
 	}
 
 	// right
 	if (event.keyCode == 39) {
-		if (xVelocity == -1) {
+		if (xDirection == -1) {
 			return;
 		}
-		yVelocity = 0;
-		xVelocity = 1;
+		yDirection = 0;
+		xDirection = 1;
 	}
 }
 
-drawGame();
+function startOver() {
+	speed = 3;
+	score = 0;
+	tailLength = 0;
+
+	headX = 10;
+	headY = 10;
+
+	mouseX = Math.floor(Math.random() * tileCount);
+	mouseY = Math.floor(Math.random() * tileCount);
+
+	xDirection = 0;
+	yDirection = 0;
+	gameOver = false;
+	init();
+}
+
+init();

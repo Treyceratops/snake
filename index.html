@@ -4,6 +4,12 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+			rel="stylesheet"
+		/>
 		<script defer src="script.js"></script>
 		<title>Snake</title>
 		<style>
@@ -14,14 +20,28 @@
 				flex-direction: column;
 				justify-content: center;
 				align-items: center;
+				font-family: 'VT323', monospace;
+				font-size: 2rem;
 			}
 			canvas {
 				box-shadow: black 20px 10px 50px;
 			}
+            button {
+                color: red;
+                border: black 3px solid;
+                background-color: white;
+                width: 4rem;
+                height: 2rem;
+            }
+            button:hover {
+                background-color: black;
+                cursor: pointer;
+            }
 		</style>
 	</head>
 	<body>
 		<h1>Snake</h1>
-		<canvas id="game" width="400" height="400" />
+        <button id="restart">Restart</button>
+		<canvas id="game" width="400" height="400">
 	</body>
 </html>
