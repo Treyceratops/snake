@@ -16,7 +16,7 @@ const yumSound = new Audio('/sounds/yum.mp3');
 const loseSound = new Audio('/sounds/lose.wav');
 loseSound.volume = 0.1;
 
-/*----- app's state (variables) -----*/
+/*----- app's state (letiables) -----*/
 
 let tileCount = 20;
 let tileSize = canvas.width / tileCount - 2;
@@ -204,6 +204,67 @@ function keyDown(event) {
 		}
 		yDirection = 0;
 		xDirection = 1;
+	}
+}
+
+let touchstartX = 0;
+let touchstartY = 0;
+let touchendX = 0;
+let touchendY = 0;
+
+const gesturedZone = document.getElementById('gesturedZone');
+
+gesturedZone.addEventListener(
+	'touchstart',
+	function (event) {
+		touchstartX = event.screenX;
+		touchstartY = event.screenY;
+	},
+	false
+);
+
+gesturedZone.addEventListener(
+	'touchend',
+	function (event) {
+		touchendX = event.screenX;
+		touchendY = event.screenY;
+		handleGesture();
+	},
+	false
+);
+
+function handleGesture() {
+	//left
+	if (touchendX < touchstartX) {
+		if (xDirection == 1) {
+			return;
+		}
+		yDirection = 0;
+		xDirection = -1;
+	}
+	//right
+	if (touchendX > touchstartX) {
+		if (xDirection == -1) {
+			return;
+		}
+		yDirection = 0;
+		xDirection = 1;
+	}
+	//down
+	if (touchendY < touchstartY) {
+		if (yDirection == -1) {
+			return;
+		}
+		yDirection = 1;
+		xDirection = 0;
+	}
+	//up
+	if (touchendY > touchstartY) {
+		if (yDirection == 1) {
+			return;
+		}
+		yDirection = -1;
+		xDirection = 0;
 	}
 }
 
