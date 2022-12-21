@@ -110,7 +110,7 @@ function isGameOver() {
 function drawScore() {
 	ctx.fillStyle = 'white';
 	ctx.font = '1.5rem VT323';
-	ctx.fillText('Score ' + score, canvas.width - 80, 20);
+	ctx.fillText('Score ' + score, canvas.width - 395, 20);
 }
 
 function clearScreen() {
@@ -119,13 +119,27 @@ function clearScreen() {
 }
 
 function drawSnake() {
+	// ctx.fillStyle = 'red';
+	// ctx.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize);
 	ctx.fillStyle = 'red';
-	ctx.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize);
+	ctx.beginPath();
+	ctx.roundRect(headX * tileCount, headY * tileCount, tileSize, tileSize, [10]);
+	ctx.fill();
+
+	// ctx.fillStyle = 'orange';
+	// for (let i = 0; i < snakeParts.length; i++) {
+	// 	let part = snakeParts[i];
+	// 	ctx.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
+	// }
 
 	ctx.fillStyle = 'orange';
+	ctx.beginPath();
 	for (let i = 0; i < snakeParts.length; i++) {
 		let part = snakeParts[i];
-		ctx.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
+		ctx.roundRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize, [
+			10,
+		]);
+		ctx.fill();
 	}
 
 	snakeParts.push(new SnakePart(headX, headY)); //put an item at the end of the list next to the head
