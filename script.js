@@ -207,27 +207,53 @@ function keyDown(event) {
 	}
 }
 
+// let touchstartX = 0;
+// let touchstartY = 0;
+// let touchendX = 0;
+// let touchendY = 0;
+
+// const gesturedZone = document.getElementById('gesturedZone');
+
+// gesturedZone.addEventListener(
+// 	'touchstart',
+// 	function (event) {
+// 		touchstartX = event.screenX;
+// 		touchstartY = event.screenY;
+// 	},
+// 	false
+// );
+
+// gesturedZone.addEventListener(
+// 	'touchend',
+// 	function (event) {
+// 		touchendX = event.screenX;
+// 		touchendY = event.screenY;
+// 		handleGesture();
+// 	},
+// 	false
+// );
+
 let touchstartX = 0;
 let touchstartY = 0;
 let touchendX = 0;
 let touchendY = 0;
 
-const gesturedZone = document.getElementById('gesturedZone');
+const gestureZone = document.getElementById('gesturedZone');
 
-gesturedZone.addEventListener(
+gestureZone.addEventListener(
 	'touchstart',
 	function (event) {
-		touchstartX = event.screenX;
-		touchstartY = event.screenY;
+		touchstartX = event.changedTouches[0].screenX;
+		touchstartY = event.changedTouches[0].screenY;
 	},
 	false
 );
 
-gesturedZone.addEventListener(
+gestureZone.addEventListener(
 	'touchend',
 	function (event) {
-		touchendX = event.screenX;
-		touchendY = event.screenY;
+		touchendX = event.changedTouches[0].screenX;
+		touchendY = event.changedTouches[0].screenY;
 		handleGesture();
 	},
 	false
