@@ -212,85 +212,104 @@ function keyDown(event) {
 // let touchendX = 0;
 // let touchendY = 0;
 
-// const gesturedZone = document.getElementById('gesturedZone');
+// const gestureZone = document.getElementById('gestureZone');
 
-// gesturedZone.addEventListener(
+// gestureZone.addEventListener(
 // 	'touchstart',
 // 	function (event) {
-// 		touchstartX = event.screenX;
-// 		touchstartY = event.screenY;
+// 		touchstartX = event.changedTouches[0].screenX;
+// 		touchstartY = event.changedTouches[0].screenY;
 // 	},
 // 	false
 // );
 
-// gesturedZone.addEventListener(
+// gestureZone.addEventListener(
 // 	'touchend',
 // 	function (event) {
-// 		touchendX = event.screenX;
-// 		touchendY = event.screenY;
+// 		touchendX = event.changedTouches[0].screenX;
+// 		touchendY = event.changedTouches[0].screenY;
 // 		handleGesture();
 // 	},
 // 	false
 // );
 
-let touchstartX = 0;
-let touchstartY = 0;
-let touchendX = 0;
-let touchendY = 0;
+// function handleGesture() {
+// 	//left
+// 	if (touchendX < touchstartX) {
+// 		// if (xDirection == 1) {
+// 		// 	return;
+// 		// }
+// 		yDirection = 0;
+// 		xDirection = -1;
+// 	}
+// 	//right
+// 	if (touchendX > touchstartX) {
+// 		// if (xDirection == -1) {
+// 		// 	return;
+// 		// }
+// 		yDirection = 0;
+// 		xDirection = 1;
+// 	}
+// 	//down
+// 	if (touchendY < touchstartY) {
+// 		if (yDirection == -1) {
+// 			return;
+// 		}
+// 		yDirection = -1;
+// 		xDirection = 0;
+// 	}
+// 	//up
+// 	if (touchendY > touchstartY) {
+// 		if (yDirection == 1) {
+// 			return;
+// 		}
+// 		yDirection = 1;
+// 		xDirection = 0;
+// 	}
+// }
+
+let startX = 0;
+let startY = 0;
 
 const gestureZone = document.getElementById('gestureZone');
 
-gestureZone.addEventListener(
-	'touchstart',
-	function (event) {
-		touchstartX = event.changedTouches[0].screenX;
-		touchstartY = event.changedTouches[0].screenY;
-	},
-	false
-);
+gestureZone.addEventListener('touchstart', handleTouchStart, false);
 
-gestureZone.addEventListener(
-	'touchend',
-	function (event) {
-		touchendX = event.changedTouches[0].screenX;
-		touchendY = event.changedTouches[0].screenY;
-		handleGesture();
-	},
-	false
-);
+gestureZone.addEventListener('touchend', handleTouchEnd, false);
 
-function handleGesture() {
-	//left
-	if (touchendX < touchstartX) {
-		// if (xDirection == 1) {
-		// 	return;
-		// }
-		yDirection = 0;
-		xDirection = -1;
+function handleTouchStart(e) {
+	startX = e.changedTouches[0].screenX;
+	startY = e.changedTouches[0].screenY;
+}
+
+function handleTouchEnd(e) {
+	const diffX = e.changedTouches[0].screenX - startX;
+	const diffY = e.changedTouches[0].screenY - startY;
+	const ratioX = Math.abs(diffX / diffY);
+	const ratioY = Math.abs(diffY / diffX);
+	const absDiff = Math.abs(ratioX > ratioY ? diffX : diffY);
+
+	// Ignore small movements.
+	if (absDiff < 30) {
+		return;
 	}
-	//right
-	if (touchendX > touchstartX) {
-		// if (xDirection == -1) {
-		// 	return;
-		// }
-		yDirection = 0;
-		xDirection = 1;
-	}
-	//down
-	if (touchendY < touchstartY) {
-		// if (yDirection == -1) {
-		// 	return;
-		// }
-		yDirection = -1;
-		xDirection = 0;
-	}
-	//up
-	if (touchendY > touchstartY) {
-		// if (yDirection == 1) {
-		// 	return;
-		// }
-		yDirection = 1;
-		xDirection = 0;
+
+	if (ratioX > ratioY) {
+		if (diffX >= 0) {
+			yDirection = 0;
+			xDirection = 1;
+		} else {
+			yDirection = 0;
+			xDirection = -1;
+		}
+	} else {
+		if (diffY >= 0) {
+			yDirection = 1;
+			xDirection = 0;
+		} else {
+			yDirection = -1;
+			xDirection = 0;
+		}
 	}
 }
 
