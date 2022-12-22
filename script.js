@@ -34,15 +34,23 @@ let mouseY = Math.floor(Math.random() * tileCount);
 let xDirection = 0;
 let yDirection = 0;
 
+let startX = 0;
+let startY = 0;
+
 /*----- cached element references -----*/
 
 const restart = document.getElementById('restart');
 
-document.addEventListener('keydown', keyDown);
+const gestureZone = document.getElementById('gestureZone');
 
 /*----- event listeners -----*/
 
 restart.addEventListener('click', startOver);
+
+document.addEventListener('keydown', keyDown);
+
+gestureZone.addEventListener('touchstart', handleTouchStart, false);
+gestureZone.addEventListener('touchend', handleTouchEnd, false);
 
 /*----- functions -----*/
 
@@ -86,7 +94,6 @@ function isGameOver() {
 		let part = snakeParts[i];
 		if (part.x === headX && part.y === headY) {
 			gameOver = true;
-			// loseSound.play();
 			break;
 		}
 	}
@@ -119,18 +126,10 @@ function clearScreen() {
 }
 
 function drawSnake() {
-	// ctx.fillStyle = 'red';
-	// ctx.fillRect(headX * tileCount, headY * tileCount, tileSize, tileSize);
 	ctx.fillStyle = 'red';
 	ctx.beginPath();
 	ctx.roundRect(headX * tileCount, headY * tileCount, tileSize, tileSize, [10]);
 	ctx.fill();
-
-	// ctx.fillStyle = 'orange';
-	// for (let i = 0; i < snakeParts.length; i++) {
-	// 	let part = snakeParts[i];
-	// 	ctx.fillRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize);
-	// }
 
 	ctx.fillStyle = 'orange';
 	ctx.beginPath();
@@ -207,76 +206,6 @@ function keyDown(event) {
 	}
 }
 
-// let touchstartX = 0;
-// let touchstartY = 0;
-// let touchendX = 0;
-// let touchendY = 0;
-
-// const gestureZone = document.getElementById('gestureZone');
-
-// gestureZone.addEventListener(
-// 	'touchstart',
-// 	function (event) {
-// 		touchstartX = event.changedTouches[0].screenX;
-// 		touchstartY = event.changedTouches[0].screenY;
-// 	},
-// 	false
-// );
-
-// gestureZone.addEventListener(
-// 	'touchend',
-// 	function (event) {
-// 		touchendX = event.changedTouches[0].screenX;
-// 		touchendY = event.changedTouches[0].screenY;
-// 		handleGesture();
-// 	},
-// 	false
-// );
-
-// function handleGesture() {
-// 	//left
-// 	if (touchendX < touchstartX) {
-// 		// if (xDirection == 1) {
-// 		// 	return;
-// 		// }
-// 		yDirection = 0;
-// 		xDirection = -1;
-// 	}
-// 	//right
-// 	if (touchendX > touchstartX) {
-// 		// if (xDirection == -1) {
-// 		// 	return;
-// 		// }
-// 		yDirection = 0;
-// 		xDirection = 1;
-// 	}
-// 	//down
-// 	if (touchendY < touchstartY) {
-// 		if (yDirection == -1) {
-// 			return;
-// 		}
-// 		yDirection = -1;
-// 		xDirection = 0;
-// 	}
-// 	//up
-// 	if (touchendY > touchstartY) {
-// 		if (yDirection == 1) {
-// 			return;
-// 		}
-// 		yDirection = 1;
-// 		xDirection = 0;
-// 	}
-// }
-
-let startX = 0;
-let startY = 0;
-
-const gestureZone = document.getElementById('gestureZone');
-
-gestureZone.addEventListener('touchstart', handleTouchStart, false);
-
-gestureZone.addEventListener('touchend', handleTouchEnd, false);
-
 function handleTouchStart(e) {
 	startX = e.changedTouches[0].screenX;
 	startY = e.changedTouches[0].screenY;
@@ -295,6 +224,7 @@ function handleTouchEnd(e) {
 	}
 
 	if (ratioX > ratioY) {
+		// right
 		if (diffX >= 0) {
 			if (xDirection == -1) {
 				return;
@@ -302,6 +232,7 @@ function handleTouchEnd(e) {
 			yDirection = 0;
 			xDirection = 1;
 		} else {
+			// left
 			if (xDirection == 1) {
 				return;
 			}
@@ -309,6 +240,7 @@ function handleTouchEnd(e) {
 			xDirection = -1;
 		}
 	} else {
+		// down
 		if (diffY >= 0) {
 			if (yDirection == -1) {
 				return;
@@ -316,6 +248,7 @@ function handleTouchEnd(e) {
 			yDirection = 1;
 			xDirection = 0;
 		} else {
+			// up
 			if (yDirection == 1) {
 				return;
 			}
