@@ -39,11 +39,16 @@ let startY = 0;
 
 /*----- cached element references -----*/
 
+const startGame = document.getElementById('start-game');
+const instructions = document.getElementById('instructions');
+
 const restart = document.getElementById('restart');
 
 const gestureZone = document.getElementById('gestureZone');
 
 /*----- event listeners -----*/
+
+startGame.addEventListener('click', removeInstructions);
 
 restart.addEventListener('click', startOver);
 
@@ -53,6 +58,10 @@ gestureZone.addEventListener('touchstart', handleTouchStart, false);
 gestureZone.addEventListener('touchend', handleTouchEnd, false);
 
 /*----- functions -----*/
+
+function removeInstructions() {
+	instructions.style.display = 'none';
+}
 
 // game loop
 function init() {
