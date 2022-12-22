@@ -34,14 +34,21 @@ let leafY = Math.floor(Math.random() * tileCount);
 let xDirection = 0;
 let yDirection = 0;
 
+let backupXDirection = 0;
+let backupYDirection = 0;
+
 let startX = 0;
 let startY = 0;
 
 /*----- cached element references -----*/
 
-const startGame = document.getElementById('start-game');
+const welcomeTxt = document.getElementById('welcome');
+
+const startGameBtn = document.getElementById('start-game');
+
 const instructions = document.getElementById('instructions');
-const instructionsButton = document.getElementById('instructions-butt');
+
+const pauseBtn = document.getElementById('pause');
 
 const restart = document.getElementById('restart');
 
@@ -49,8 +56,8 @@ const gestureZone = document.getElementById('gestureZone');
 
 /*----- event listeners -----*/
 
-startGame.addEventListener('click', removeInstructions);
-instructionsButton.addEventListener('click', addInstructions);
+startGameBtn.addEventListener('click', removeInstructions);
+pauseBtn.addEventListener('click', pause);
 
 restart.addEventListener('click', startOver);
 
@@ -63,10 +70,18 @@ gestureZone.addEventListener('touchend', handleTouchEnd, false);
 
 function removeInstructions() {
 	instructions.style.display = 'none';
+	xDirection = backupXDirection;
+	yDirection = backupYDirection;
 }
 
-function addInstructions() {
+function pause() {
 	instructions.style.display = 'block';
+	backupXDirection = xDirection;
+	backupYDirection = yDirection;
+	xDirection = 0;
+	yDirection = 0;
+	startGameBtn.innerHTML = 'UNPAUSE';
+	welcomeTxt.innerHTML = 'GAME PAUSED';
 }
 
 // game loop
@@ -178,7 +193,7 @@ function checkLeafCollision() {
 		leafY = Math.floor(Math.random() * tileCount);
 		tailLength++;
 		score++;
-		speed += 0.5;
+		speed += 0.3;
 		yumSound.play();
 	}
 }
