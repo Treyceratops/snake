@@ -281,16 +281,16 @@ function handleGesture() {
 		// if (yDirection == -1) {
 		// 	return;
 		// }
-		yDirection = 0;
-		xDirection = 1;
+		yDirection = -1;
+		xDirection = 0;
 	}
 	//up
 	if (touchendY > touchstartY) {
 		// if (yDirection == 1) {
 		// 	return;
 		// }
-		yDirection = 0;
-		xDirection = -1;
+		yDirection = 1;
+		xDirection = 0;
 	}
 }
 
