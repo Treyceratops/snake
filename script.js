@@ -16,14 +16,15 @@ const yumSound = new Audio('/sounds/yum.mp3');
 const loseSound = new Audio('/sounds/lose.wav');
 loseSound.volume = 0.1;
 
-/*----- app's state (letiables) -----*/
+/*----- app's state (variables) -----*/
 
 let tileCount = 20;
 let tileSize = canvas.width / tileCount - 2;
 
-let speed = 3;
-let score = 0;
+let speed = 33.5;
+let level = 0;
 let tailLength = 0;
+let automated = false;
 
 let headX = 10;
 let headY = 10;
@@ -40,6 +41,8 @@ let backupYDirection = 0;
 let startX = 0;
 let startY = 0;
 
+let automatic = false;
+
 /*----- cached element references -----*/
 
 const welcomeTxt = document.getElementById('welcome');
@@ -52,12 +55,17 @@ const pauseBtn = document.getElementById('pause');
 
 const restart = document.getElementById('restart');
 
+const autoBtn = document.getElementById('auto');
+
 const gestureZone = document.getElementById('gestureZone');
+
+// const metamorphosis = document.getElementById('metamorphosis');
 
 /*----- event listeners -----*/
 
 startGameBtn.addEventListener('click', removeInstructions);
 pauseBtn.addEventListener('click', pause);
+autoBtn.addEventListener('click', automate);
 
 restart.addEventListener('click', startOver);
 
@@ -86,6 +94,7 @@ function pause() {
 
 // game loop
 function init() {
+	automatic ? automate() : (automatic = false);
 	changeCaterpillarPosition();
 	let result = isGameOver();
 	if (result) {
@@ -96,9 +105,63 @@ function init() {
 
 	checkLeafCollision();
 	drawLeaf();
+
 	drawCaterpillar();
-	drawScore();
+	drawLevel();
 	setTimeout(init, 1000 / speed);
+}
+
+// ways auto-caterpillar is dying:
+
+// - turning around and hitting it's own body if leaf appears on same axis it's already on. can't avoid it's own body
+
+// - if it doesn't have time to turn before leaf re-appears (don't collide with border: if head x or y is equal to 0 or equal to tileCount)
+function automate() {
+	level == 2 ? (gameOver = true) : null;
+	automatic = true;
+	// xDirection = 1;
+	//save initialized leaf coords, will later be replace with checkLeafCollision coords
+	xPos = headX - leafX;
+	yPos = headY - leafY;
+
+	// X LOGIC
+	if (xPos > 0) {
+		if (caterpillarParts.length > 0 && xDirection == 1) {
+			return;
+		}
+		xDirection = -1;
+		yDirection = 0;
+	}
+	if (xPos < 0) {
+		if (caterpillarParts.length > 0 && xDirection == -1) {
+			return;
+		}
+		xDirection = 1;
+		yDirection = 0;
+	}
+	if (xPos == 0) {
+		//Y LOGIC
+		if (yPos > 0) {
+			if (caterpillarParts.length > 0 && yDirection == 1) {
+				return;
+			}
+			yDirection = -1;
+			xDirection = 0;
+		}
+		if (yPos < 0) {
+			if (caterpillarParts.length > 0 && yDirection == -1) {
+				return;
+			}
+			yDirection = 1;
+			xDirection = 0;
+		}
+	}
+	// let automated = false
+	// function automate() {
+	// automated = true (for checkLeafCollision)
+	//	compare current caterpillarHead x,y coords to current leaf x,y coords,
+	// based on difference, will *assign* a value for x/y Direction variable.
+	//}
 }
 
 function isGameOver() {
@@ -144,10 +207,10 @@ function isGameOver() {
 	return gameOver;
 }
 
-function drawScore() {
+function drawLevel() {
 	ctx.fillStyle = 'white';
 	ctx.font = '1.5rem VT323';
-	ctx.fillText('Score ' + score, canvas.width - 395, 20);
+	ctx.fillText('Level ' + level, canvas.width - 385, 30);
 }
 
 function clearScreen() {
@@ -192,8 +255,9 @@ function checkLeafCollision() {
 		leafX = Math.floor(Math.random() * tileCount);
 		leafY = Math.floor(Math.random() * tileCount);
 		tailLength++;
-		score++;
-		speed += 0.3;
+		level++;
+		// metamorphose();
+		speed += 0.2;
 		yumSound.play();
 	}
 }
@@ -290,7 +354,7 @@ function handleTouchEnd(e) {
 
 function startOver() {
 	speed = 3;
-	score = 0;
+	level = 0;
 	tailLength = 0;
 
 	headX = 10;
@@ -302,7 +366,15 @@ function startOver() {
 	xDirection = 0;
 	yDirection = 0;
 	gameOver = false;
+	// canvas.display = 'block';
 	init();
 }
+
+// function metamorphose() {
+// 	if (level >= 1) {
+// 		canvas.style.display = 'none';
+// 		metamorphosis.style.display = 'block';
+// 	}
+// }
 
 init();
