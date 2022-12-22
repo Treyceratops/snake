@@ -296,17 +296,29 @@ function handleTouchEnd(e) {
 
 	if (ratioX > ratioY) {
 		if (diffX >= 0) {
+			if (xDirection == -1) {
+				return;
+			}
 			yDirection = 0;
 			xDirection = 1;
 		} else {
+			if (xDirection == 1) {
+				return;
+			}
 			yDirection = 0;
 			xDirection = -1;
 		}
 	} else {
 		if (diffY >= 0) {
+			if (yDirection == -1) {
+				return;
+			}
 			yDirection = 1;
 			xDirection = 0;
 		} else {
+			if (yDirection == 1) {
+				return;
+			}
 			yDirection = -1;
 			xDirection = 0;
 		}
