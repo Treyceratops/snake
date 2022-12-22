@@ -28,8 +28,8 @@ let tailLength = 0;
 let headX = 10;
 let headY = 10;
 
-let mouseX = Math.floor(Math.random() * tileCount);
-let mouseY = Math.floor(Math.random() * tileCount);
+let leafX = Math.floor(Math.random() * tileCount);
+let leafY = Math.floor(Math.random() * tileCount);
 
 let xDirection = 0;
 let yDirection = 0;
@@ -64,8 +64,8 @@ function init() {
 
 	clearScreen();
 
-	checkMouseCollision();
-	drawMouse();
+	checkLeafCollision();
+	drawLeaf();
 	drawCaterpillar();
 	drawScore();
 	setTimeout(init, 1000 / speed);
@@ -152,15 +152,15 @@ function changeCaterpillarPosition() {
 	headY = headY + yDirection;
 }
 
-function drawMouse() {
+function drawLeaf() {
 	ctx.fillStyle = 'green';
-	ctx.fillRect(mouseX * tileCount, mouseY * tileCount, tileSize, tileSize);
+	ctx.fillRect(leafX * tileCount, leafY * tileCount, tileSize, tileSize);
 }
 
-function checkMouseCollision() {
-	if (mouseX === headX && mouseY === headY) {
-		mouseX = Math.floor(Math.random() * tileCount);
-		mouseY = Math.floor(Math.random() * tileCount);
+function checkLeafCollision() {
+	if (leafX === headX && leafY === headY) {
+		leafX = Math.floor(Math.random() * tileCount);
+		leafY = Math.floor(Math.random() * tileCount);
 		tailLength++;
 		score++;
 		speed += 0.5;
@@ -266,8 +266,8 @@ function startOver() {
 	headX = 10;
 	headY = 10;
 
-	mouseX = Math.floor(Math.random() * tileCount);
-	mouseY = Math.floor(Math.random() * tileCount);
+	leafX = Math.floor(Math.random() * tileCount);
+	leafY = Math.floor(Math.random() * tileCount);
 
 	xDirection = 0;
 	yDirection = 0;
