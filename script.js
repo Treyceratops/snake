@@ -3,14 +3,14 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-class SnakePart {
+class CaterpillarPart {
 	constructor(x, y) {
 		this.x = x;
 		this.y = y;
 	}
 }
 
-const snakeParts = [];
+const caterpillarParts = [];
 
 const yumSound = new Audio('/sounds/yum.mp3');
 const loseSound = new Audio('/sounds/lose.wav');
@@ -56,7 +56,7 @@ gestureZone.addEventListener('touchend', handleTouchEnd, false);
 
 // game loop
 function init() {
-	changeSnakePosition();
+	changeCaterpillarPosition();
 	let result = isGameOver();
 	if (result) {
 		return;
@@ -66,7 +66,7 @@ function init() {
 
 	checkMouseCollision();
 	drawMouse();
-	drawSnake();
+	drawCaterpillar();
 	drawScore();
 	setTimeout(init, 1000 / speed);
 }
@@ -89,9 +89,9 @@ function isGameOver() {
 		gameOver = true;
 	}
 
-	// hit snake part
-	for (let i = 0; i < snakeParts.length; i++) {
-		let part = snakeParts[i];
+	// hit Caterpillar part
+	for (let i = 0; i < caterpillarParts.length; i++) {
+		let part = caterpillarParts[i];
 		if (part.x === headX && part.y === headY) {
 			gameOver = true;
 			break;
@@ -125,7 +125,7 @@ function clearScreen() {
 	ctx.fillRect(0, 0, canvas.clientWidth, canvas.height);
 }
 
-function drawSnake() {
+function drawCaterpillar() {
 	ctx.fillStyle = 'red';
 	ctx.beginPath();
 	ctx.roundRect(headX * tileCount, headY * tileCount, tileSize, tileSize, [10]);
@@ -133,21 +133,21 @@ function drawSnake() {
 
 	ctx.fillStyle = 'orange';
 	ctx.beginPath();
-	for (let i = 0; i < snakeParts.length; i++) {
-		let part = snakeParts[i];
+	for (let i = 0; i < caterpillarParts.length; i++) {
+		let part = caterpillarParts[i];
 		ctx.roundRect(part.x * tileCount, part.y * tileCount, tileSize, tileSize, [
 			10,
 		]);
 		ctx.fill();
 	}
 
-	snakeParts.push(new SnakePart(headX, headY)); //put an item at the end of the list next to the head
-	while (snakeParts.length > tailLength) {
-		snakeParts.shift(); // remove the furthest item from the snake parts if have more than our tail size
+	caterpillarParts.push(new CaterpillarPart(headX, headY)); //put an item at the end of the list next to the head
+	while (caterpillarParts.length > tailLength) {
+		caterpillarParts.shift(); // remove the furthest item from the Caterpillar parts if have more than our tail size
 	}
 }
 
-function changeSnakePosition() {
+function changeCaterpillarPosition() {
 	headX = headX + xDirection;
 	headY = headY + yDirection;
 }
