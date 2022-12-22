@@ -238,7 +238,7 @@ let touchstartY = 0;
 let touchendX = 0;
 let touchendY = 0;
 
-const gestureZone = document.getElementById('gesturedZone');
+const gestureZone = document.getElementById('gestureZone');
 
 gestureZone.addEventListener(
 	'touchstart',
@@ -262,35 +262,35 @@ gestureZone.addEventListener(
 function handleGesture() {
 	//left
 	if (touchendX < touchstartX) {
-		if (xDirection == 1) {
-			return;
-		}
+		// if (xDirection == 1) {
+		// 	return;
+		// }
 		yDirection = 0;
 		xDirection = -1;
 	}
 	//right
 	if (touchendX > touchstartX) {
-		if (xDirection == -1) {
-			return;
-		}
+		// if (xDirection == -1) {
+		// 	return;
+		// }
 		yDirection = 0;
 		xDirection = 1;
 	}
 	//down
 	if (touchendY < touchstartY) {
-		if (yDirection == -1) {
-			return;
-		}
-		yDirection = 1;
-		xDirection = 0;
+		// if (yDirection == -1) {
+		// 	return;
+		// }
+		yDirection = 0;
+		xDirection = 1;
 	}
 	//up
 	if (touchendY > touchstartY) {
-		if (yDirection == 1) {
-			return;
-		}
-		yDirection = -1;
-		xDirection = 0;
+		// if (yDirection == 1) {
+		// 	return;
+		// }
+		yDirection = 0;
+		xDirection = -1;
 	}
 }
 
