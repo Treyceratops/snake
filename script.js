@@ -226,14 +226,14 @@ function handleTouchEnd(e) {
 	if (ratioX > ratioY) {
 		// right
 		if (diffX >= 0) {
-			if (xDirection == -1) {
+			if (caterpillarParts > 0 && xDirection == -1) {
 				return;
 			}
 			yDirection = 0;
 			xDirection = 1;
 		} else {
 			// left
-			if (xDirection == 1) {
+			if (caterpillarParts > 0 && xDirection == 1) {
 				return;
 			}
 			yDirection = 0;
@@ -242,14 +242,14 @@ function handleTouchEnd(e) {
 	} else {
 		// down
 		if (diffY >= 0) {
-			if (yDirection == -1) {
+			if (caterpillarParts > 0 && yDirection == -1) {
 				return;
 			}
 			yDirection = 1;
 			xDirection = 0;
 		} else {
 			// up
-			if (yDirection == 1) {
+			if (caterpillarParts > 0 && yDirection == 1) {
 				return;
 			}
 			yDirection = -1;
