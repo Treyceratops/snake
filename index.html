@@ -65,7 +65,7 @@
                 text-shadow: black 2px 5px;
             }
 			#caterpillar {
-				margin-top: 10rem;
+				margin-top: 8rem;
 			}
 			canvas {
 				box-shadow: black 20px 10px 50px;
@@ -73,16 +73,29 @@
             #restart {
                 font-family: 'VT323', monospace;
                 font-size: 1.5rem;
-                color: red;
+                color: white;
                 border: 3px solid red;
                 background-color: black;
                 width: fit-content;
                 height: 2rem;
             }
             #restart:hover {
-                background-color: white;
+                color: red;
                 cursor: pointer;
             }
+			#instructions-butt {
+				font-family: 'VT323', monospace;
+                font-size: 1.5rem;
+                color: white;
+                border: 3px solid green;
+                background-color: black;
+                width: fit-content;
+                height: 2rem;
+			}
+			#instructions-butt:hover {
+                color: green;
+				cursor: pointer;
+			}
 			@media only screen and (max-width: 700px) {
 				#instructions {
 					font-size: 1.5rem;
@@ -110,6 +123,7 @@
 		<div id="gestureZone">
 			<h1 id="caterpillar" >Caterpillar</h1>
 			<button id="restart">Restart</button>
+			<button id="instructions-butt">Instructions</button>
 			<canvas id="game" width="400" height="400">
 		</div>
 	</body>
