@@ -21,7 +21,7 @@ loseSound.volume = 0.1;
 let tileCount = 20;
 let tileSize = canvas.width / tileCount - 2;
 
-let speed = 33.5;
+let speed = 3.5;
 let level = 0;
 let tailLength = 0;
 let automated = false;
@@ -115,18 +115,41 @@ function init() {
 
 // - turning around and hitting it's own body if leaf appears on same axis it's already on. can't avoid it's own body
 
-// - if it doesn't have time to turn before leaf re-appears (don't collide with border: if head x or y is equal to 0 or equal to tileCount)
+// - if yPos = 0, it turns on itself
 function automate() {
-	level == 2 ? (gameOver = true) : null;
+	console.log(caterpillarParts);
 	automatic = true;
-	// xDirection = 1;
-	//save initialized leaf coords, will later be replace with checkLeafCollision coords
-	xPos = headX - leafX;
-	yPos = headY - leafY;
+	let xPos = headX - leafX;
+	let yPos = headY - leafY;
+	console.log(
+		`post-Head: x=${headX} y=${headY} post-Leaf: x=${leafX} y=${leafY}`
+	);
 
+	// avoid walls
+	if (headX === 0) {
+		xDirection = 0;
+	}
+	if (headX === tileCount - 1) {
+		xDirection = 0;
+	}
+	if (headY === 0) {
+		yDirection = 0;
+	}
+	if (headY === tileCount - 1) {
+		yDirection = 0;
+	}
+
+	// if (Math.abs(xPos) < Math.abs(yPos)) {
 	// X LOGIC
 	if (xPos > 0) {
 		if (caterpillarParts.length > 0 && xDirection == 1) {
+			console.log('i want to go left, but my fat a$$ is in the way');
+			xDirection = 0;
+			if (yPos < 0) {
+				yDirection = -1;
+			} else {
+				yDirection = 1;
+			}
 			return;
 		}
 		xDirection = -1;
@@ -134,28 +157,97 @@ function automate() {
 	}
 	if (xPos < 0) {
 		if (caterpillarParts.length > 0 && xDirection == -1) {
+			console.log('i want to go right, but my fat a$$ is in the way');
+			xDirection = 0;
+			if (yPos < 0) {
+				yDirection = -1;
+			} else {
+				yDirection = 1;
+			}
 			return;
 		}
 		xDirection = 1;
 		yDirection = 0;
 	}
 	if (xPos == 0) {
-		//Y LOGIC
 		if (yPos > 0) {
 			if (caterpillarParts.length > 0 && yDirection == 1) {
+				console.log('i want to go up, but my fat a$$ is in the way');
+				yDirection = 0;
+				if (xPos < 0) {
+					xDirection = 1;
+				} else {
+					xDirection = -1;
+				}
 				return;
 			}
-			yDirection = -1;
 			xDirection = 0;
+			yDirection = -1;
 		}
 		if (yPos < 0) {
 			if (caterpillarParts.length > 0 && yDirection == -1) {
+				console.log('i want to go down, but my fat ass is in the way');
+				yDirection = 0;
+				if (xPos < 0) {
+					xDirection = 1;
+				} else {
+					xDirection = -1;
+				}
 				return;
 			}
-			yDirection = 1;
 			xDirection = 0;
+			yDirection = 1;
 		}
 	}
+
+	// Body Collision PseudoCode:
+	// use caterpillar parts saved to variable as positions ()
+	//
+
+	// } else {
+	// 	//Y LOGIC
+	// 	if (yPos > 0) {
+	// 		if (caterpillarParts.length > 0 && yDirection == 1) {
+	// 			xDirection = -1;
+	// 			yDirection = 0;
+	// 			// return;
+	// 		}
+	// 		xDirection = 0;
+	// 		yDirection = -1;
+	// 	}
+	// 	if (yPos < 0) {
+	// 		if (caterpillarParts.length > 0 && yDirection == -1) {
+	// 			xDirection = -1;
+	// 			yDirection = 0;
+	// 			// return;
+	// 		}
+	// 		xDirection = 0;
+	// 		yDirection = 1;
+	// 	}
+	// 	if (yPos == 0) {
+	// 		if (xPos > 0) {
+	// 			if (caterpillarParts.length > 0 && xDirection == 1) {
+	// 				xDirection = 0;
+	// 				yDirection = -1;
+	// 				// return;
+	// 			}
+	// 			xDirection = -1;
+	// 			yDirection = 0;
+	// 		}
+	// 		if (xPos < 0) {
+	// 			if (caterpillarParts.length > 0 && xDirection == -1) {
+	// 				xDirection = 0;
+	// 				yDirection = -1;
+	// 				// return;
+	// 			}
+	// 			xDirection = 1;
+	// 			yDirection = 0;
+	// 		}
+	// 	}
+	// }
+
+	// if (xPos == 0) {
+	// }
 	// let automated = false
 	// function automate() {
 	// automated = true (for checkLeafCollision)
@@ -192,7 +284,10 @@ function isGameOver() {
 	}
 
 	if (gameOver) {
-		loseSound.play();
+		console.log(
+			`post-Head: x=${headX} y=${headY} post-Leaf: x=${leafX} y=${leafY} GAME OVERRRRRRRRR`
+		);
+		// loseSound.play();
 		ctx.font = '3rem VT323';
 
 		const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
@@ -353,7 +448,8 @@ function handleTouchEnd(e) {
 }
 
 function startOver() {
-	speed = 3;
+	// automatic = false;
+	speed = 3.5;
 	level = 0;
 	tailLength = 0;
 
