@@ -29,8 +29,8 @@ let automated = false;
 let headX = 10;
 let headY = 10;
 
-let leafX = Math.floor(Math.random() * tileCount);
-let leafY = Math.floor(Math.random() * tileCount);
+let appleX = Math.floor(Math.random() * tileCount);
+let appleY = Math.floor(Math.random() * tileCount);
 
 let xDirection = 0;
 let yDirection = 0;
@@ -49,6 +49,8 @@ const welcomeTxt = document.getElementById('welcome');
 
 const startGameBtn = document.getElementById('start-game');
 
+const heading = document.getElementById('caterpillar');
+
 const instructions = document.getElementById('instructions');
 
 const pauseBtn = document.getElementById('pause');
@@ -59,7 +61,7 @@ const autoBtn = document.getElementById('auto');
 
 const gestureZone = document.getElementById('gestureZone');
 
-// const metamorphosis = document.getElementById('metamorphosis');
+const metamorphosis = document.getElementById('metamorphosis');
 
 /*----- event listeners -----*/
 
@@ -94,6 +96,7 @@ function pause() {
 
 // game loop
 function init() {
+	heading.innerHTML = 'Caterpillar';
 	automatic ? automate() : (automatic = false);
 	changeCaterpillarPosition();
 	let result = isGameOver();
@@ -103,26 +106,28 @@ function init() {
 
 	clearScreen();
 
-	checkLeafCollision();
-	drawLeaf();
+	checkAppleCollision();
+	drawApple();
 
 	drawCaterpillar();
 	drawLevel();
 	setTimeout(init, 1000 / speed);
+	metamorphose();
 }
 
 // ways auto-caterpillar is dying:
 
-// - turning around and hitting it's own body if leaf appears on same axis it's already on. can't avoid it's own body
+// - turning around and hitting it's own body if apple appears on same axis it's already on. can't avoid it's own body
 
 // - if yPos = 0, it turns on itself
 function automate() {
+	// metamorphose(); need to stop movement after metamorphose
 	console.log(caterpillarParts);
 	automatic = true;
-	let xPos = headX - leafX;
-	let yPos = headY - leafY;
+	let xPos = headX - appleX;
+	let yPos = headY - appleY;
 	console.log(
-		`post-Head: x=${headX} y=${headY} post-Leaf: x=${leafX} y=${leafY}`
+		`post-Head: x=${headX} y=${headY} post-Apple: x=${appleX} y=${appleY}`
 	);
 
 	// avoid walls
@@ -250,8 +255,8 @@ function automate() {
 	// }
 	// let automated = false
 	// function automate() {
-	// automated = true (for checkLeafCollision)
-	//	compare current caterpillarHead x,y coords to current leaf x,y coords,
+	// automated = true (for checkAppleCollision)
+	//	compare current caterpillarHead x,y coords to current apple x,y coords,
 	// based on difference, will *assign* a value for x/y Direction variable.
 	//}
 }
@@ -285,7 +290,7 @@ function isGameOver() {
 
 	if (gameOver) {
 		console.log(
-			`post-Head: x=${headX} y=${headY} post-Leaf: x=${leafX} y=${leafY} GAME OVERRRRRRRRR`
+			`post-Head: x=${headX} y=${headY} post-apple: x=${appleX} y=${appleY} GAME OVERRRRRRRRR`
 		);
 		// loseSound.play();
 		ctx.font = '3rem VT323';
@@ -314,7 +319,7 @@ function clearScreen() {
 }
 
 function drawCaterpillar() {
-	ctx.fillStyle = 'red';
+	ctx.fillStyle = 'green';
 	ctx.beginPath();
 	ctx.roundRect(headX * tileCount, headY * tileCount, tileSize, tileSize, [10]);
 	ctx.fill();
@@ -340,20 +345,20 @@ function changeCaterpillarPosition() {
 	headY = headY + yDirection;
 }
 
-function drawLeaf() {
-	ctx.fillStyle = 'green';
-	ctx.fillRect(leafX * tileCount, leafY * tileCount, tileSize, tileSize);
+function drawApple() {
+	ctx.fillStyle = 'red';
+	ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
 }
 
-function checkLeafCollision() {
-	if (leafX === headX && leafY === headY) {
-		leafX = Math.floor(Math.random() * tileCount);
-		leafY = Math.floor(Math.random() * tileCount);
+function checkAppleCollision() {
+	if (appleX === headX && appleY === headY) {
+		appleX = Math.floor(Math.random() * tileCount);
+		appleY = Math.floor(Math.random() * tileCount);
 		tailLength++;
 		level++;
-		// metamorphose();
 		speed += 0.2;
 		yumSound.play();
+		// metamorphose();
 	}
 }
 
@@ -456,21 +461,26 @@ function startOver() {
 	headX = 10;
 	headY = 10;
 
-	leafX = Math.floor(Math.random() * tileCount);
-	leafY = Math.floor(Math.random() * tileCount);
+	appleX = Math.floor(Math.random() * tileCount);
+	appleY = Math.floor(Math.random() * tileCount);
 
 	xDirection = 0;
 	yDirection = 0;
 	gameOver = false;
-	// canvas.display = 'block';
+	metamorphosis.style.display = 'none';
+	canvas.style.display = 'block';
 	init();
 }
 
-// function metamorphose() {
-// 	if (level >= 1) {
-// 		canvas.style.display = 'none';
-// 		metamorphosis.style.display = 'block';
-// 	}
-// }
+function metamorphose() {
+	if (level == 1) {
+		canvas.style.display = 'none';
+		xDirection = 0;
+		yDirection = 0;
+		metamorphosis.style.display = 'block';
+		heading.innerHTML = 'Butterfly lv 20';
+	}
+	return;
+}
 
 init();

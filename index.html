@@ -107,10 +107,13 @@
                 color: blue;
 				cursor: pointer;
 			}
-			/* #metamorphosis{
+			#metamorphosis{
 				display: none;
-				background: url('/metamorphosis.gif');
-			} */
+				background: black;
+				box-shadow: black 20px 10px 50px;
+				height: 400px;
+				width: 400px;
+			}
 			@media only screen and (max-width: 700px) {
 				#instructions {
 					font-size: 1.5rem;
@@ -132,7 +135,7 @@
 				<li>Eat leaves to grow levels.</li> 
 				<li>If you hit a wall or your own body, it's game over.</li> 
 				<li>The more leaves your caterpillar eats, the faster they move.</li>
-				<li>Aim for a high level!</li>
+				<li>Reach level 20 to become a butterfly! 🦋</li>
 			</ul>
 			<button id="start-game">START GAME</button>
 		</div>
@@ -143,9 +146,8 @@
 				<button id="restart">RESTART</button>
 				<button id="auto">AUTO-PLAY</button>
 			</div>
-			<canvas id="game" width="400" height="400">
-			<!-- <img id="metamorphosis" src="/metamorphosis.gif" alt="metamorphosis"> -->
+			<img id="metamorphosis" src="/metamorphosis.gif" alt="metamorphosis">
+			<canvas id="game" width="400" height="400">		
 		</div>
-		<!-- <div id="metamorphosis"></div> -->
 	</body>
 </html>
