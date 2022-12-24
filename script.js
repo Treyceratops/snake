@@ -16,20 +16,21 @@ const yumSound = new Audio('/sounds/yum.mp3');
 const loseSound = new Audio('/sounds/lose.wav');
 loseSound.volume = 0.1;
 
-/*----- app's state (letiables) -----*/
+/*----- app's state (variables) -----*/
 
 let tileCount = 20;
 let tileSize = canvas.width / tileCount - 2;
 
-let speed = 3;
-let score = 0;
+let speed = 3.5;
+let level = 0;
 let tailLength = 0;
+// let automated = false;
 
 let headX = 10;
 let headY = 10;
 
-let leafX = Math.floor(Math.random() * tileCount);
-let leafY = Math.floor(Math.random() * tileCount);
+let appleX = Math.floor(Math.random() * tileCount);
+let appleY = Math.floor(Math.random() * tileCount);
 
 let xDirection = 0;
 let yDirection = 0;
@@ -40,11 +41,15 @@ let backupYDirection = 0;
 let startX = 0;
 let startY = 0;
 
+let automatic = false;
+
 /*----- cached element references -----*/
 
 const welcomeTxt = document.getElementById('welcome');
 
 const startGameBtn = document.getElementById('start-game');
+
+const heading = document.getElementById('caterpillar');
 
 const instructions = document.getElementById('instructions');
 
@@ -52,12 +57,17 @@ const pauseBtn = document.getElementById('pause');
 
 const restart = document.getElementById('restart');
 
+const autoBtn = document.getElementById('auto');
+
 const gestureZone = document.getElementById('gestureZone');
+
+const metamorphosis = document.getElementById('metamorphosis');
 
 /*----- event listeners -----*/
 
 startGameBtn.addEventListener('click', removeInstructions);
 pauseBtn.addEventListener('click', pause);
+autoBtn.addEventListener('click', automate);
 
 restart.addEventListener('click', startOver);
 
@@ -86,6 +96,8 @@ function pause() {
 
 // game loop
 function init() {
+	heading.innerHTML = 'Caterpillar';
+	automatic ? automate() : (automatic = false);
 	changeCaterpillarPosition();
 	let result = isGameOver();
 	if (result) {
@@ -94,11 +106,159 @@ function init() {
 
 	clearScreen();
 
-	checkLeafCollision();
-	drawLeaf();
+	checkAppleCollision();
+	drawApple();
+
 	drawCaterpillar();
-	drawScore();
+	drawLevel();
 	setTimeout(init, 1000 / speed);
+	metamorphose();
+}
+
+// ways auto-caterpillar is dying:
+
+// - turning around and hitting it's own body if apple appears on same axis it's already on. can't avoid it's own body
+
+// - if yPos = 0, it turns on itself
+function automate() {
+	// metamorphose(); need to stop movement after metamorphose
+	console.log(caterpillarParts);
+	automatic = true;
+	let xPos = headX - appleX;
+	let yPos = headY - appleY;
+	console.log(
+		`post-Head: x=${headX} y=${headY} post-Apple: x=${appleX} y=${appleY}`
+	);
+
+	// avoid walls
+	if (headX === 0) {
+		xDirection = 0;
+	}
+	if (headX === tileCount - 1) {
+		xDirection = 0;
+	}
+	if (headY === 0) {
+		yDirection = 0;
+	}
+	if (headY === tileCount - 1) {
+		yDirection = 0;
+	}
+
+	// if (Math.abs(xPos) < Math.abs(yPos)) {
+	// X LOGIC
+	if (xPos > 0) {
+		if (caterpillarParts.length > 0 && xDirection == 1) {
+			console.log('i want to go left, but my fat a$$ is in the way');
+			xDirection = 0;
+			if (yPos < 0) {
+				yDirection = -1;
+			} else {
+				yDirection = 1;
+			}
+			return;
+		}
+		xDirection = -1;
+		yDirection = 0;
+	}
+	if (xPos < 0) {
+		if (caterpillarParts.length > 0 && xDirection == -1) {
+			console.log('i want to go right, but my fat a$$ is in the way');
+			xDirection = 0;
+			if (yPos < 0) {
+				yDirection = -1;
+			} else {
+				yDirection = 1;
+			}
+			return;
+		}
+		xDirection = 1;
+		yDirection = 0;
+	}
+	if (xPos == 0) {
+		if (yPos > 0) {
+			if (caterpillarParts.length > 0 && yDirection == 1) {
+				console.log('i want to go up, but my fat a$$ is in the way');
+				yDirection = 0;
+				if (xPos < 0) {
+					xDirection = 1;
+				} else {
+					xDirection = -1;
+				}
+				return;
+			}
+			xDirection = 0;
+			yDirection = -1;
+		}
+		if (yPos < 0) {
+			if (caterpillarParts.length > 0 && yDirection == -1) {
+				console.log('i want to go down, but my fat ass is in the way');
+				yDirection = 0;
+				if (xPos < 0) {
+					xDirection = 1;
+				} else {
+					xDirection = -1;
+				}
+				return;
+			}
+			xDirection = 0;
+			yDirection = 1;
+		}
+	}
+
+	// Body Collision PseudoCode:
+	// use caterpillar parts saved to variable as positions ()
+	//
+
+	// } else {
+	// 	//Y LOGIC
+	// 	if (yPos > 0) {
+	// 		if (caterpillarParts.length > 0 && yDirection == 1) {
+	// 			xDirection = -1;
+	// 			yDirection = 0;
+	// 			// return;
+	// 		}
+	// 		xDirection = 0;
+	// 		yDirection = -1;
+	// 	}
+	// 	if (yPos < 0) {
+	// 		if (caterpillarParts.length > 0 && yDirection == -1) {
+	// 			xDirection = -1;
+	// 			yDirection = 0;
+	// 			// return;
+	// 		}
+	// 		xDirection = 0;
+	// 		yDirection = 1;
+	// 	}
+	// 	if (yPos == 0) {
+	// 		if (xPos > 0) {
+	// 			if (caterpillarParts.length > 0 && xDirection == 1) {
+	// 				xDirection = 0;
+	// 				yDirection = -1;
+	// 				// return;
+	// 			}
+	// 			xDirection = -1;
+	// 			yDirection = 0;
+	// 		}
+	// 		if (xPos < 0) {
+	// 			if (caterpillarParts.length > 0 && xDirection == -1) {
+	// 				xDirection = 0;
+	// 				yDirection = -1;
+	// 				// return;
+	// 			}
+	// 			xDirection = 1;
+	// 			yDirection = 0;
+	// 		}
+	// 	}
+	// }
+
+	// if (xPos == 0) {
+	// }
+	// let automated = false
+	// function automate() {
+	// automated = true (for checkAppleCollision)
+	//	compare current caterpillarHead x,y coords to current apple x,y coords,
+	// based on difference, will *assign* a value for x/y Direction variable.
+	//}
 }
 
 function isGameOver() {
@@ -129,14 +289,18 @@ function isGameOver() {
 	}
 
 	if (gameOver) {
+		console.log(
+			`post-Head: x=${headX} y=${headY} post-apple: x=${appleX} y=${appleY} GAME OVERRRRRRRRR`
+		);
 		loseSound.play();
 		ctx.font = '3rem VT323';
 
-		const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-		gradient.addColorStop('0', 'red');
-		gradient.addColorStop('0.5', 'purple');
-		gradient.addColorStop('1.0', 'turquoise');
-		ctx.fillStyle = gradient;
+		// const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+		// gradient.addColorStop('0', 'red');
+		// gradient.addColorStop('0.5', 'purple');
+		// gradient.addColorStop('1.0', 'turquoise');
+		// ctx.fillStyle = gradient;
+		ctx.fillStyle = 'white';
 
 		ctx.fillText('Game Over!', canvas.width / 3.5, canvas.height / 2);
 	}
@@ -144,10 +308,10 @@ function isGameOver() {
 	return gameOver;
 }
 
-function drawScore() {
+function drawLevel() {
 	ctx.fillStyle = 'white';
 	ctx.font = '1.5rem VT323';
-	ctx.fillText('Score ' + score, canvas.width - 395, 20);
+	ctx.fillText('Level ' + level, canvas.width - 385, 30);
 }
 
 function clearScreen() {
@@ -156,7 +320,7 @@ function clearScreen() {
 }
 
 function drawCaterpillar() {
-	ctx.fillStyle = 'red';
+	ctx.fillStyle = 'green';
 	ctx.beginPath();
 	ctx.roundRect(headX * tileCount, headY * tileCount, tileSize, tileSize, [10]);
 	ctx.fill();
@@ -182,19 +346,20 @@ function changeCaterpillarPosition() {
 	headY = headY + yDirection;
 }
 
-function drawLeaf() {
-	ctx.fillStyle = 'green';
-	ctx.fillRect(leafX * tileCount, leafY * tileCount, tileSize, tileSize);
+function drawApple() {
+	ctx.fillStyle = 'red';
+	ctx.fillRect(appleX * tileCount, appleY * tileCount, tileSize, tileSize);
 }
 
-function checkLeafCollision() {
-	if (leafX === headX && leafY === headY) {
-		leafX = Math.floor(Math.random() * tileCount);
-		leafY = Math.floor(Math.random() * tileCount);
+function checkAppleCollision() {
+	if (appleX === headX && appleY === headY) {
+		appleX = Math.floor(Math.random() * tileCount);
+		appleY = Math.floor(Math.random() * tileCount);
 		tailLength++;
-		score++;
-		speed += 0.3;
+		level++;
+		speed += 0.2;
 		yumSound.play();
+		// metamorphose();
 	}
 }
 
@@ -289,20 +454,34 @@ function handleTouchEnd(e) {
 }
 
 function startOver() {
-	speed = 3;
-	score = 0;
+	automatic = false;
+	speed = 3.5;
+	level = 0;
 	tailLength = 0;
 
 	headX = 10;
 	headY = 10;
 
-	leafX = Math.floor(Math.random() * tileCount);
-	leafY = Math.floor(Math.random() * tileCount);
+	appleX = Math.floor(Math.random() * tileCount);
+	appleY = Math.floor(Math.random() * tileCount);
 
 	xDirection = 0;
 	yDirection = 0;
 	gameOver = false;
+	metamorphosis.style.display = 'none';
+	canvas.style.display = 'block';
 	init();
+}
+
+function metamorphose() {
+	if (level == 20) {
+		canvas.style.display = 'none';
+		xDirection = 0;
+		yDirection = 0;
+		metamorphosis.style.display = 'block';
+		heading.innerHTML = 'Butterfly lv 20';
+	}
+	return;
 }
 
 init();

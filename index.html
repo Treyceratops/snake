@@ -68,7 +68,7 @@
                 text-shadow: black 2px 5px;
             }
 			#caterpillar {
-				margin-top: 8rem;
+				margin-top: 9rem;
 			}
 			canvas {
 				box-shadow: black 20px 10px 50px;
@@ -95,14 +95,33 @@
                 color: green;
 				cursor: pointer;
 			}
+			#auto {
+                font-size: 1.5rem;
+                color: white;
+                border: 3px solid blue;
+                background-color: black;
+                height: 3rem;
+			}
+			#auto:hover {
+                color: blue;
+				cursor: pointer;
+			}
+			#metamorphosis{
+				display: none;
+				background: black;
+				box-shadow: black 20px 10px 50px;
+				height: 400px;
+				width: 400px;
+			}
 			@media only screen and (max-width: 700px) {
 				#instructions {
 					font-size: 1.5rem;
 					padding: 0;
 				}
-				 h1 {
-					margin-top: .3rem;
-				 }
+				li {
+					list-style-type: '→';
+					padding: .5rem;
+				}
 			}
 		</style>
 	</head>
@@ -113,9 +132,11 @@
 				<li>
 					Press the ↑, →, ↓, and ← keys on your keyboard (or swipe for mobile) in the direction you want to move your caterpillar.
 				</li>
-				<li>Eat leaves to score points.</li> 
-				<li>The more leaves your caterpillar eat, the faster they move.</li>
-				<li>Aim for a high score!</li>
+				<li>Eat apples to grow levels.</li> 
+				<li>If you hit a wall or your own body, it's game over.</li> 
+				<li>The more apples your caterpillar eats, the faster they move.</li>
+				<li>Reach level 20 to become a butterfly! 🦋</li>
+				<li>Use "Auto-Play" mode to see how far the computer can get.</li>
 			</ul>
 			<button id="start-game">START GAME</button>
 		</div>
@@ -124,8 +145,10 @@
 			<div>
 				<button id="pause">PAUSE</button>
 				<button id="restart">RESTART</button>
+				<button id="auto">AUTO-PLAY</button>
 			</div>
-			<canvas id="game" width="400" height="400">
+			<img id="metamorphosis" src="/metamorphosis.gif" alt="metamorphosis">
+			<canvas id="game" width="400" height="400">		
 		</div>
 	</body>
 </html>
