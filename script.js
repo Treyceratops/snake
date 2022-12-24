@@ -24,7 +24,7 @@ let tileSize = canvas.width / tileCount - 2;
 let speed = 3.5;
 let level = 0;
 let tailLength = 0;
-let automated = false;
+// let automated = false;
 
 let headX = 10;
 let headY = 10;
@@ -292,14 +292,15 @@ function isGameOver() {
 		console.log(
 			`post-Head: x=${headX} y=${headY} post-apple: x=${appleX} y=${appleY} GAME OVERRRRRRRRR`
 		);
-		// loseSound.play();
+		loseSound.play();
 		ctx.font = '3rem VT323';
 
-		const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-		gradient.addColorStop('0', 'red');
-		gradient.addColorStop('0.5', 'purple');
-		gradient.addColorStop('1.0', 'turquoise');
-		ctx.fillStyle = gradient;
+		// const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+		// gradient.addColorStop('0', 'red');
+		// gradient.addColorStop('0.5', 'purple');
+		// gradient.addColorStop('1.0', 'turquoise');
+		// ctx.fillStyle = gradient;
+		ctx.fillStyle = 'white';
 
 		ctx.fillText('Game Over!', canvas.width / 3.5, canvas.height / 2);
 	}
@@ -453,7 +454,7 @@ function handleTouchEnd(e) {
 }
 
 function startOver() {
-	// automatic = false;
+	automatic = false;
 	speed = 3.5;
 	level = 0;
 	tailLength = 0;
@@ -473,7 +474,7 @@ function startOver() {
 }
 
 function metamorphose() {
-	if (level == 1) {
+	if (level == 20) {
 		canvas.style.display = 'none';
 		xDirection = 0;
 		yDirection = 0;
