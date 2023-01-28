@@ -123,6 +123,7 @@ function init() {
 function automate() {
 	// metamorphose(); need to stop movement after metamorphose
 	console.log(caterpillarParts);
+	// level >= 20 ? !automatic : automatic;
 	automatic = true;
 	let xPos = headX - appleX;
 	let yPos = headY - appleY;
@@ -455,7 +456,7 @@ function handleTouchEnd(e) {
 
 function startOver() {
 	automatic = false;
-	speed = 3.5;
+	speed = 133.5;
 	level = 0;
 	tailLength = 0;
 
@@ -474,7 +475,7 @@ function startOver() {
 }
 
 function metamorphose() {
-	if (level == 20) {
+	if (level == 20 && automatic == true) {
 		canvas.style.display = 'none';
 		xDirection = 0;
 		yDirection = 0;
