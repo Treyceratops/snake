@@ -474,7 +474,7 @@ function startOver() {
 }
 
 function metamorphose() {
-	if (level == 20) {
+	if (level == 20 && automatic == true) {
 		canvas.style.display = 'none';
 		xDirection = 0;
 		yDirection = 0;
